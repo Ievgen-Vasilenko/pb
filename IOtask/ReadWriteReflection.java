@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,11 +32,13 @@ class ReadWriteReflection {
             fileWriter = new FileWriter(outputFile, true);
             Scanner scanner = new Scanner(fileReader);
             while (scanner.hasNextLine()) {
+                logger.log(Level.INFO, "Start scan new line.");
                 String str = scanner.nextLine();
                 String delimeter = " ";
                 String[] subStr = str.split(delimeter);
                 String className = subStr[0];
                 String methodName = subStr[1];
+                logger.log(Level.INFO, "Stop scan new line. LINE - " + str);
                 String[] params = new String[subStr.length - 2];
                 System.arraycopy(subStr, 2, params, 0, subStr.length - 2);
                 try {
@@ -46,25 +49,28 @@ class ReadWriteReflection {
                         Object object = c.newInstance();
                         method = c.getDeclaredMethod(methodName, paramTypes);
                         method.setAccessible(true);
-                        fileWriter.write(String.valueOf(method.invoke(object, (Object[]) params)) + "\n");
+                        logger.log(Level.INFO, "Class name - " + c.getName() + ", method name - " + method.getName() + ", params - " + Arrays.toString(params));
+                        String result = String.valueOf(method.invoke(object, (Object[]) params));
+                        fileWriter.write(result);
+                        logger.log(Level.INFO, "Result - " + result);
                     }
 
                 } catch (ClassNotFoundException e) {
-                    logger.log(Level.SEVERE, str + " - CLASS NOT FOUND! " + e);
+                    logger.log(Level.WARNING, str + " - CLASS NOT FOUND! " + e);
                 } catch (NoSuchMethodException e) {
-                    logger.log(Level.SEVERE, str + " - METHOD NOT FOUND! " + e);
+                    logger.log(Level.WARNING, str + " - METHOD NOT FOUND! " + e);
                 } catch (IllegalArgumentException e) {
-                    logger.log(Level.SEVERE, str + " - WRONG NUMBER OF ARGUMENTS! " + e);
+                    logger.log(Level.WARNING, str + " - WRONG NUMBER OF ARGUMENTS! " + e);
                 } catch (InstantiationException e) {
-                    logger.log(Level.SEVERE, str + " - OBJECT NOT CREATED! " + e);
+                    logger.log(Level.WARNING, str + " - OBJECT NOT CREATED! " + e);
                 } catch (IllegalAccessException e) {
-                    logger.log(Level.SEVERE, str + " - ILLEGAL METHOD ACCESS! " + e);
+                    logger.log(Level.WARNING, str + " - ILLEGAL METHOD ACCESS! " + e);
                 } catch (InvocationTargetException e) {
-                    logger.log(Level.SEVERE, str + " - INVOKE PROBLEM! " + e);
+                    logger.log(Level.WARNING, str + " - INVOKE PROBLEM! " + e);
                 }
             }
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "FILE NOT FOUND! " + e);
+            logger.log(Level.WARNING, "FILE NOT FOUND! " + e);
         } finally {
             try {
                 assert fileReader != null;
@@ -73,7 +79,7 @@ class ReadWriteReflection {
                 fileWriter.close();
                 logger.log(Level.INFO, "FILE WRITER IS CLOSED!");
             } catch (IOException e) {
-                logger.log(Level.SEVERE, "FILE READER/WRITER NOT FOUND! " + e);
+                logger.log(Level.WARNING, "FILE READER/WRITER NOT FOUND! " + e);
             }
         }
     }
