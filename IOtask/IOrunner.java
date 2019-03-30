@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public class IOrunner {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
         ReadWriteReflection readWriteReflection = new ReadWriteReflection(
                 "/Users/wasel/IdeaProjects/untitled/src/IOtask/input.txt",
