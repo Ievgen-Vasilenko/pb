@@ -12,18 +12,43 @@ import java.util.Scanner;
 public class MyOpFactory implements OperationFactory {
     private final static String MESSAGE_NOT_FOUND_OPERATION = " - ошибка, такой операции не существует!";
     private final static String MESSAGE_REENTRY = "Введите операцию повторно: ";
+
     @Override
     public Operation getOpInstance(String op) {
         try {
             switch (op) {
                 case "+":
-                    return new OpPlus();
+                    if (Calculator.getOperations().containsKey("+")) {
+                        return Calculator.getOperations().get("+");
+                    } else {
+                        OpPlus opPlus = new OpPlus();
+                        Calculator.setOperations("+", opPlus);
+                        return opPlus;
+                    }
                 case "-":
-                    return new OpMinus();
+                    if (Calculator.getOperations().containsKey("-")) {
+                        return Calculator.getOperations().get("-");
+                    } else {
+                        OpMinus opMinus = new OpMinus();
+                        Calculator.setOperations("-", opMinus);
+                        return opMinus;
+                    }
                 case "*":
-                    return new OpMul();
+                    if (Calculator.getOperations().containsKey("*")) {
+                        return Calculator.getOperations().get("*");
+                    } else {
+                        OpMul opMul = new OpMul();
+                        Calculator.setOperations("*", opMul);
+                        return opMul;
+                    }
                 case "/":
-                    return new OpDiv();
+                    if (Calculator.getOperations().containsKey("/")) {
+                        return Calculator.getOperations().get("/");
+                    } else {
+                        OpDiv opDiv = new OpDiv();
+                        Calculator.setOperations("/", opDiv);
+                        return opDiv;
+                    }
                 default:
                     throw new OperationNotFoundException(op + MESSAGE_NOT_FOUND_OPERATION);
             }

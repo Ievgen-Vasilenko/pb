@@ -4,5 +4,5 @@ public interface InputData {
 
     void dataIn();
 
-    void dataOut(Double result);
+    String dataOut(String result);
 }
